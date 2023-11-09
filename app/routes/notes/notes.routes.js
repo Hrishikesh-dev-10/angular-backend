@@ -4,6 +4,7 @@ const { verifyToken } = require('../../middleware/auth');
 
 notesRoutes.post('/create',verifyToken,Controller.createNoteController);
 notesRoutes.get('/getByUsers/:id',verifyToken,Controller.getNoteController);
+notesRoutes.get('/getByID/:id',Controller.getNoteByIDController)
 notesRoutes.delete('/deleteNote/:id',verifyToken,Controller.deleteNoteController);
 notesRoutes.put('/updateNote',verifyToken,Controller.updateNoteController);
 
