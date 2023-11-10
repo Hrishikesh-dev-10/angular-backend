@@ -16,7 +16,6 @@ const createNoteController=async(req,res)=>{
         res.status(200).send({
             status_code:200,
             message:'Note Added',
-            data
         })
     } catch (error) {
         res.status(401).send({
@@ -89,15 +88,19 @@ const getNoteController=async(req,res)=>{
 
 const deleteNoteController = async(req,res)=>{
     try {
-        const temp = await dbConfig('shared_notes').delete().where({notes_id:req.params.id})
-        const data = await dbConfig('notes').delete().where({id:req.params.id})
+
+       
+        
+        const temp = await dbConfig('shared_notes').delete().where({notes_id:req.params.id});
+       
+        const data = await dbConfig('notes').delete().where({id:req.params.id});
         
         res.status(200).send({
             status_code:200,
             message:'Note Deleted',
         })
     } catch (error) {
-        console.log(error)
+      
         res.status(401).send({
             status_code:401,
             message:'Bad request'
@@ -105,16 +108,29 @@ const deleteNoteController = async(req,res)=>{
     }
 }
 
+
 const updateNoteController = async(req,res)=>{
     try {
 
       
         const data = await dbConfig('notes').update({title:req.body.title,body:req.body.body}).where({id:req.body.id})
-        res.status(200).send({
-            status_code:200,
-            message:'Note Updated',
-            
-        })
+        if(data===1)
+        {
+            res.status(200).send({
+                status_code:200,
+                message:'Note Updated',
+                
+            })
+        }
+        else
+        {
+            res.status(202).send({
+                status_code:202,
+                message:'Note Not Found.',
+                
+            })
+        }
+        
     } catch (error) {
       
         res.status(401).send({
@@ -164,9 +180,7 @@ const sharedNoteController = async(req,res)=>{
 const getSharedNotes= async(req,res)=>{
     try {
         
-        const data = await pool.query(`Select notes.title,notes.body,sharedNotes.notes_id,users.username,users.id From Public.notes as notes , Public.shared_notes as sharedNotes,Public.user as users Where notes.id= sharedNotes.notes_id AND sharedNotes.shared_to=$1 AND users.id=sharedNotes.shared_by`,[req.params.id])
-
-
+        const data = await pool.query(`Select notes.title,notes.body,sharedNotes.notes_id,users.username,users.id From Public.notes as notes , Public.shared_notes as sharedNotes,Public.user as users Where notes.id= sharedNotes.notes_id AND sharedNotes.shared_to=$1 AND users.id=sharedNotes.shared_by`,[req.params.id]);
         res.status(200).send({
             status_code:200,
             message:'Note Shared',

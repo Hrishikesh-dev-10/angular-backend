@@ -43,14 +43,14 @@ const getUserController = async(req,res)=>{
         const param = {
             id:req.param.id
         }
-        const data = await dbConfig('user').select('id','email','username').from('user').where(param).first();
+        const data = await pool.query(`select * from public.user where id=$1`,[req.params.id])
         res.send({
             status_code:200,
             message:'User Found',
-            data
+            data:data.rows
         })
     } catch (error) {
-        
+        console.log(error)
         res.status(401).send({
             status_code:401,
             message:'Bad request'
