@@ -4,6 +4,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { generateToken } = require('../../middleware/auth');
 
+const Pool = require('pg').Pool
+const pool = new Pool({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'practice',
+    password: 'postgres',
+    port: 5432,
+})
+
 const createUserController =async(req,res)=>{
     try {
 
@@ -21,6 +30,7 @@ const createUserController =async(req,res)=>{
             
         })
     } catch (error) {
+        console.log(error)
         res.status(401).send({
             status_code:401,
             message:'Bad request'
@@ -47,6 +57,26 @@ const getUserController = async(req,res)=>{
         })
     }
 }
+
+const getAllUserController = async(req,res)=>{
+    try {
+        
+        
+        const data = await pool.query(`select * from public.user where not id=$1`,[req.params.id])
+        res.send({
+            status_code:200,
+            message:'User Found',
+            data:data.rows
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(401).send({
+            status_code:401,
+            message:'Bad request'
+        })
+    }
+}
+
 
 const loginUserController = async(req,res)=>{
     try {
@@ -99,4 +129,4 @@ const loginUserController = async(req,res)=>{
 
 
 
-module.exports={createUserController,getUserController,loginUserController};
+module.exports={getAllUserController,createUserController,getUserController,loginUserController};
