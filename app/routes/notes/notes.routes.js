@@ -7,5 +7,7 @@ notesRoutes.get('/getByUsers/:id',verifyToken,Controller.getNoteController);
 notesRoutes.get('/getByID/:id',Controller.getNoteByIDController)
 notesRoutes.delete('/deleteNote/:id',verifyToken,Controller.deleteNoteController);
 notesRoutes.put('/updateNote',verifyToken,Controller.updateNoteController);
+notesRoutes.post('/sharedCreate',Controller.sharedNoteController);
+notesRoutes.get('/sharedNotes/:id',Controller.getSharedNotes);
 
 module.exports = notesRoutes;
